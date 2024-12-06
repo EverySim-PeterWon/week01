@@ -1,9 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-// const scene = new THREE.Scene();
-// const camera = new THREE.PerspectiveCamera();
-
 function ThreeDCanvas() {
   const mountRef = useRef(null);
 

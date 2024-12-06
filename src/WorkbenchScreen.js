@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
+// import * as THREE from "three";
 import ThreeDCanvas from "./ThreeDCanvas";
-import * as THREE from "three";
-
-function CanvasComponent() {
-  // 씬, 카메라, 렌더러 설정
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  const renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-}
+import { VertexInput } from "./VertexWindow";
 
 export function WorkbenchScreen() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openVerticesModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeVerticesModal = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div>
+      {!isOpen && (
+        <div>
+          <button onClick={openVerticesModal}>NEW Vertices</button>
+        </div>
+      )}
+
+      {isOpen && (
+        <div className="modal">
+          <VertexInput />
+          <button onClick={closeVerticesModal}>CLOSE Vertices</button>
+        </div>
+      )}
       <ThreeDCanvas />
     </div>
   );
