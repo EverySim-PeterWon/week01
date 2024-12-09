@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 // import ReactDOM from "react-dom/client";
 // import * as THREE from "three";
-import { Header } from "./header";
+import { MenuBarMain } from "./MenuBar";
 import ThreeDCanvas from "./ThreeDCanvas";
 import { VertexInput } from "./VertexWindow";
 
@@ -18,7 +18,7 @@ export function WorkbenchScreen() {
 
   return (
     <div>
-      <Header />
+      <MenuBarMain />
       {!isOpen && (
         <div>
           <button onClick={openVerticesModal}>NEW Vertices</button>
