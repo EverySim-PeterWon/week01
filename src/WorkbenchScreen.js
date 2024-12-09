@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom/client";
+// import ReactDOM from "react-dom/client";
 // import * as THREE from "three";
+import { Header } from "./header";
 import ThreeDCanvas from "./ThreeDCanvas";
 import { VertexInput } from "./VertexWindow";
 
@@ -17,6 +18,7 @@ export function WorkbenchScreen() {
 
   return (
     <div>
+      <Header />
       {!isOpen && (
         <div>
           <button onClick={openVerticesModal}>NEW Vertices</button>
@@ -33,11 +35,3 @@ export function WorkbenchScreen() {
     </div>
   );
 }
-
-// function animate() {
-//   requestAnimationFrame(animate);
-//   renderer.render(scene, camera);
-// }
-
-const canvas = ReactDOM.createRoot(document.getElementById("root"));
-canvas.render(<ThreeDCanvas />);
