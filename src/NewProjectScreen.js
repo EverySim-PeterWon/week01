@@ -12,15 +12,14 @@ export function NewProjectScreen({ onBack }) {
   const [showNewProject, setNewProject] = React.useState(true);
 
   // Define handle function of input at project name
-  const handleNewInputChange = (event) => {
-    setProjectName(event.target.value);
+  const handleNewInputChange = (e) => {
+    e.preventDefault();
+    setProjectName(e.target.value);
     // console.log(event.target.value);
   };
 
   // Define handle function of MAKE button when click
   const handleButtonMakeClick = () => {
-    localStorage.setItem("project_id", JSON.stringify(projectId));
-    localStorage.setItem("project_name", JSON.stringify(projectName));
     SetNewProjectData(projectId, projectName);
     setMakeWorkbench(true);
     setNewProject(false);

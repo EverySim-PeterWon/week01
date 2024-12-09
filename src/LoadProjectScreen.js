@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SelectLoadProjButton, SelectButton } from "./ProjectButton";
 import { WorkbenchScreen } from "./WorkbenchScreen";
 
@@ -6,6 +6,42 @@ export function LoadProjectScreen({ onBack }) {
   const [showWorkbench, setMakeWorkbench] = React.useState(false);
   const [showLoadProject, setLoadProject] = React.useState(true);
   const [disableButton, setDisableButton] = React.useState(false);
+
+  function DynamicButtons() {
+    const [buttons, setButtons] = React.useState([]);
+
+    useEffect(() => {
+      const storedData = localStorage.getItem("project");
+
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setButtons(parsedData["name"]);
+      }
+    }, []);
+
+    const handleButtonClick = (buttonLabel) => {
+      console.log(`Button clicked: ${buttonLabel}`);
+    };
+
+    return (
+      <div>
+        <div>
+          {buttons.length > 0 ? (
+            buttons.map((buttonLabel, index) => (
+              <button
+                key={index}
+                onClick={() => handleButtonClick(buttonLabel)}
+              >
+                {buttonLabel}
+              </button>
+            ))
+          ) : (
+            <p>NO PROJECT</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const handleButtonMakeClick = () => {
     setMakeWorkbench(true);
@@ -25,12 +61,7 @@ export function LoadProjectScreen({ onBack }) {
       <div>
         <button onClick={onBack}>BACK</button>
         <h1>LOAD PROJECT</h1>
-        <form>Select project</form>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <SelectLoadProjButton projName="Test01" />
-          <SelectLoadProjButton projName="Test02" />
-          <SelectLoadProjButton projName="Test03" />
-        </div>
+        <DynamicButtons />
       </div>
     );
   }

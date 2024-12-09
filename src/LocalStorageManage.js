@@ -5,52 +5,37 @@ function isString(value) {
 }
 
 export function ProjectIdAuto() {
-  const projectId = localStorage.getItem("project_id");
-  if (!projectId) {
+  const projectId = JSON.parse(localStorage.getItem("project"));
+  if (!projectId || projectId === null) {
     return 0;
   } else {
-    const array_id = JSON.parse(localStorage.getItem("project_id"));
-    const new_id = array_id[array_id.length - 1] + 1;
+    const new_id = projectId["id"][projectId["id"].length - 1] + 1;
     return new_id;
   }
 }
 
 export function SetNewProjectData(project_id, project_name) {
   // Import project id and project name from localStorage
-  let array_id = JSON.parse(localStorage.getItem("project_id"));
-  let array_project_name = localStorage.getItem("project_name");
-
-  console.log(array_id);
-  console.log(typeof array_id);
-  console.log(array_project_name);
-  console.log(typeof array_project_name);
-
-  if (!Array.isArray(array_id) && Number.isFinite(array_id)) {
-    array_id = [array_id];
+  let project_data = JSON.parse(localStorage.getItem("project"));
+  if (
+    project_data === null ||
+    (typeof project_data === "object" && project_data[0])
+  ) {
+    project_data = {
+      id: [project_id],
+      name: [project_name],
+    };
   } else {
-    array_id = [];
-  }
-  if (!Array.isArray(array_project_name) && isString(array_project_name)) {
-    array_project_name = [array_project_name];
-  } else {
-    array_project_name = [];
+    project_data["id"].push(project_id);
+    project_data["name"].push(project_name);
   }
 
-  //   console.log(array_id);
-  //   console.log(typeof array_id);
-  //   console.log(array_project_name);
-  //   console.log(typeof array_project_name);
-
-  // 배열에 새 데이터 추가
-  array_id.push(project_id);
-  array_project_name.push(project_name);
-
-  console.log(array_id);
-  console.log(typeof array_id);
-  console.log(array_project_name);
-  console.log(typeof array_project_name);
+  console.log(project_data["id"]);
+  console.log(project_data["name"]);
 
   // Save localStorage
-  localStorage.setItem("project_id", JSON.stringify(array_id));
-  localStorage.setItem("project_name", JSON.stringify(array_project_name));
+  localStorage.setItem(
+    "project",
+    JSON.stringify({ id: project_data["id"], name: project_data["name"] })
+  );
 }
