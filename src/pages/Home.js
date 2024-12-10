@@ -1,39 +1,21 @@
 import React from "react";
-import { NewProjectScreen } from "../NewProjectScreen";
-import { LoadProjectScreen } from "../LoadProjectScreen";
-import { SelectNewButton, SelectLoadButton } from "../ProjectButton";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  // New project
-  const [showProjectNew, setShowProjectNew] = React.useState(false);
-  // Load project
-  const [showProjectLoad, setShowProjectLoad] = React.useState(false);
+  const navigate = useNavigate();
 
-  const handleButtonNewClick = () => {
-    setShowProjectNew(true);
-    setShowProjectLoad(false);
+  const handleNewClick = () => {
+    navigate("/new_project");
   };
 
-  const handleButtonLoadClick = () => {
-    setShowProjectNew(false);
-    setShowProjectLoad(true);
-  };
-
-  const handleButtonBackClick = () => {
-    setShowProjectNew(false);
-    setShowProjectLoad(false);
+  const handleLoadClick = () => {
+    navigate("/load_project");
   };
 
   return (
     <div>
-      {!showProjectNew && !showProjectLoad && (
-        <>
-          <SelectNewButton onClick={handleButtonNewClick} />
-          <SelectLoadButton onClick={handleButtonLoadClick} />
-        </>
-      )}
-      {showProjectNew && <NewProjectScreen onBack={handleButtonBackClick} />}
-      {showProjectLoad && <LoadProjectScreen onBack={handleButtonBackClick} />}
+      <button onClick={handleNewClick}>NEW PROJECT</button>
+      <button onClick={handleLoadClick}>LOAD PROJECT</button>
     </div>
   );
 };
