@@ -1,40 +1,20 @@
 import React from "react";
-import { NewProjectScreen } from "./NewProjectScreen";
-import { LoadProjectScreen } from "./LoadProjectScreen";
-import { SelectNewButton, SelectLoadButton } from "./ProjectButton";
+import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import NewProject from "./pages/NewProject";
+import LoadProject from "./pages/LoadProject";
 
 function App() {
-  // New project
-  const [showProjectNew, setShowProjectNew] = React.useState(false);
-  // Load project
-  const [showProjectLoad, setShowProjectLoad] = React.useState(false);
-
-  const handleButtonNewClick = () => {
-    setShowProjectNew(true);
-    setShowProjectLoad(false);
-  };
-
-  const handleButtonLoadClick = () => {
-    setShowProjectNew(false);
-    setShowProjectLoad(true);
-  };
-
-  const handleButtonBackClick = () => {
-    setShowProjectNew(false);
-    setShowProjectLoad(false);
-  };
-
   return (
-    <div>
-      {!showProjectNew && !showProjectLoad && (
-        <>
-          <SelectNewButton onClick={handleButtonNewClick} />
-          <SelectLoadButton onClick={handleButtonLoadClick} />
-        </>
-      )}
-      {showProjectNew && <NewProjectScreen onBack={handleButtonBackClick} />}
-      {showProjectLoad && <LoadProjectScreen onBack={handleButtonBackClick} />}
-    </div>
+    <BrowserRouter>
+      <div>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/new_project" element={<NewProject />} />
+          <Route path="/load_project" element={<LoadProject />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
