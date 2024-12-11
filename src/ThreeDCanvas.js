@@ -41,9 +41,14 @@ function ThreeDCanvas() {
 
     animate();
 
-    // Cleanup
     return () => {
-      mountRef.current.removeChild(renderer.domElement);
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
+
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
     };
   }, []);
 
