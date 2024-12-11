@@ -1,21 +1,45 @@
+import { useNavigate } from "react-router-dom";
+
 export function MenuBarMain() {
-  const project_data = localStorage.getItem("project");
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate("/home");
+  };
+
+  const handleNewClick = () => {
+    navigate("/new_project");
+  };
+
+  const handleLoadClick = () => {
+    navigate("/load_project");
+  };
+
+  const handleProjectClick = () => {
+    navigate("/workbench");
+  };
+
+  const projectObj = localStorage.getItem("project");
   let project_count = 0;
   let time_recent = "NONE";
-  if (project_data) {
-    const project_array = JSON.parse(project_data);
-    project_count = project_array["name"].length;
-    const time_array = project_array["time"].map(Number);
-    time_recent = new Date(Math.max(...time_array)).toDateString();
+  if (projectObj) {
+    const projNameArray = Object.values(JSON.parse(projectObj)).map(
+      (item) => item[0]
+    );
+    const projTimeArray = Object.values(JSON.parse(projectObj)).map(
+      (item) => item[1]
+    );
+    project_count = projNameArray.length;
+    time_recent = new Date(Math.max(...projTimeArray)).toDateString();
   }
 
   return (
     <header>
       <ul id="menu-bar" style={{ display: "flex", alignItems: "center" }}>
-        <button>HOME</button>
-        <button>NEW</button>
-        <button>LOAD</button>
-        <button>WORKSPACE</button>
+        <button onClick={handleHomeClick}>HOME</button>
+        <button onClick={handleNewClick}>NEW</button>
+        <button onClick={handleLoadClick}>LOAD</button>
+        <button onClick={handleProjectClick}>PROJECT</button>
         <div>
           <p> Number of Project: {project_count}</p>
           <p> Recent work time: {time_recent}</p>

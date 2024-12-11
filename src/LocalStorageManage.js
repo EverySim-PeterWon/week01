@@ -1,45 +1,39 @@
 // import React from "react";
 
 export function ProjectIdAuto() {
-  const projectId = JSON.parse(localStorage.getItem("project"));
-  if (!projectId || projectId === null) {
+  const projectObj = JSON.parse(localStorage.getItem("project"));
+  if (!projectObj || projectObj === null) {
     return 0;
   } else {
-    const new_id = projectId["id"][projectId["id"].length - 1] + 1;
-    return new_id;
+    const keysObj = Object.keys(projectObj);
+    const IntKeys = keysObj.map((key) => parseInt(key, 10));
+    return Math.max(...IntKeys) + 1;
   }
 }
 
 export function SetNewProjectData(project_id, project_name) {
   // Import project id and project name from localStorage
-  let project_data = JSON.parse(localStorage.getItem("project"));
-  const time_now = Date.now().toString();
-  if (
-    project_data === null ||
-    (typeof project_data === "object" && project_data[0])
-  ) {
-    project_data = {
-      id: [project_id],
-      name: [project_name],
-      time: [time_now],
-    };
-  } else {
-    project_data["id"].push(project_id);
-    project_data["name"].push(project_name);
-    project_data["time"].push(time_now);
+  let storedData = JSON.parse(localStorage.getItem("project"));
+  const array_new = [project_name, Date.now()];
+
+  function valid_project_data(storedData) {
+    return (
+      storedData === null ||
+      (typeof storedData === "object" &&
+        storedData[Object.keys(storedData)[0]].length === 1)
+    );
   }
 
-  // console.log(project_data["id"]);
-  // console.log(project_data["name"]);
-  // console.log(project_data["time"]);
-
-  // Save localStorage
-  localStorage.setItem(
-    "project",
-    JSON.stringify({
-      id: project_data["id"],
-      name: project_data["name"],
-      time: project_data["time"],
-    })
-  );
+  if (valid_project_data(storedData)) {
+    // const objData = {${project_id}: [${project_name}, ${Date.now()}]};
+    // storedData = localStorage.setItem(JSON.stringify(objData));
+    // storedData[Object.keys(storedData)[0]] = array_new;
+    const objData = {};
+    const key_new = [project_id];
+    objData[key_new] = array_new;
+    localStorage.setItem("project", JSON.stringify(objData));
+  } else {
+    storedData[project_id] = array_new;
+    localStorage.setItem("project", JSON.stringify(storedData));
+  }
 }
