@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 export function VertexInput() {
+  // The function
+  function vertexValidCheck(vertex) {
+    return (
+      !vertex.x ||
+      !vertex.y ||
+      !vertex.z ||
+      isNaN(Number(vertex.x)) ||
+      isNaN(Number(vertex.y)) ||
+      isNaN(Number(vertex.z)) ||
+      vertex.x.length === 0 ||
+      vertex.y.length === 0 ||
+      vertex.z.length === 0
+    );
+  }
+
   const [vertex, setVertex] = useState({ x: [], y: [], z: [] });
   const [vertices, setVertices] = useState([]);
   const [error, setError] = useState("");
@@ -22,17 +37,7 @@ export function VertexInput() {
       setError("Fill the number.");
       return;
     }
-    if (
-      !vertex.x ||
-      !vertex.y ||
-      !vertex.z ||
-      isNaN(Number(vertex.x)) ||
-      isNaN(Number(vertex.y)) ||
-      isNaN(Number(vertex.z)) ||
-      vertex.x.length === 0 ||
-      vertex.y.length === 0 ||
-      vertex.z.length === 0
-    ) {
+    if (vertexValidCheck(vertex)) {
       setError("All value MUST BE Fill with the number.");
       return;
     }
