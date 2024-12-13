@@ -1,35 +1,47 @@
 import React from "react";
 import * as dfd from "danfojs";
 
-export function DataCSVAuto(projName) {
-  // Load csv data
-  async function LoadCSV({ file }) {
-    const response = await fetch(file);
-    const text = await response.text();
+export function handleCSVDanfo() {
+  // Save dataframe
+  const [dataFrame, setDataFrame] = React.useState(null);
+  // File path of dataframe
+  const [outputFilePath, setOutputFilePath] = React.useState("");
 
-    const rows = text
-      .split(/\r?\n/)
-      .filter((row) => row.trim() !== "")
-      .map((row) => row.split(","));
+  const projCSVpath = "../data/";
+  const verticesCSV = `${projCSVpath}vertices.csv`;
+  const elementsTriCSV = `${projCSVpath}elements_tri.csv`;
+  const elementsQuadCSV = `${projCSVpath}elements_quad.csv`;
 
-    const headers = rows.shift();
-    const data = rows.map((row) => {
-      return headers.reduce((obj, header, index) => {
-        obj[header] = row[index];
-        return obj;
-      }, {});
-    });
+  const readCSV = async (filePath) => {
+    const csvFilePath = require(filePath);
+    try {
+      const df_vertices = await dfd.readCSV({ csvFilePath });
+      console.log("DataFrame Loaded");
+      df_vertices.print();
+      setDataFrame(df_vertices);
+    } catch (error) {}
+  };
 
-    return data;
-  }
+  const exportCSV = () => {
+    if (dataFrame) {
+      const outputFileName = "vertices.csv";
+      dfd.toCSV(dataFrame, {
+        fileName: outputFileName,
+        download: true,
+      });
+      setOutputFilePath(outputFileName);
+    } else {
+      console.error("No data to export");
+    }
+  };
 
-  function DirName(projName, fileName) {
-    return `.src\\${projName}\\${fileName}.csv`;
-  }
+  React.useEffect(() => {
+    readCSV();
+  }, []);
 
-  const vertices_csv = LoadCSV(DirName(projName, "vertices"));
-  const elements_tri_csv = LoadCSV(DirName(projName, "elements_tri"));
-  const elements_quad_csv = LoadCSV(DirName(projName, "elements_quad"));
-
-  return;
+  return (
+    <div>
+      <h3>CSV file handler test with danfo.js</h3>
+    </div>
+  );
 }
