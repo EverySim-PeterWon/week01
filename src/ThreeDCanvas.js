@@ -1,59 +1,123 @@
 import React, { useEffect, useRef } from "react";
-// import {Canvas, useFrame} from '@react-three/fiber';
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { CurrentProjectLoad } from "./LocalStorageManage";
 import * as THREE from "three";
 
-function ThreeDCanvas() {
-  const mountRef = useRef(null);
+const Scene = () => {
+  const pointsRef = useRef();
+  const linesRef = useRef();
+
+  const CurrentProject = CurrentProjectLoad();
+  const projectId = CurrentProject["id"];
 
   useEffect(() => {
-    // 씬 생성
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xffffff);
+    const verticesObj = localStorage.getItem("vertices");
+    const elementsObj = localStorage.getItem("elements");
 
-    // 카메라 생성
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 5;
+    if (verticesObj && elementsObj) {
+      const verticesData = JSON.parse(verticesObj);
+      const elementsData = JSON.parse(elementsObj);
 
-    // 렌더러 생성
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    mountRef.current.appendChild(renderer.domElement);
+      const filteredVertices = verticesData.filter(
+        (v) => v.project_id === projectId
+      );
+      const filteredElements = elementsData.filter(
+        (e) => e.project_id === projectId
+      );
 
-    // 기본 큐브 생성
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+      const pointsGeometry = new THREE.BufferGeometry();
+      const points = filteredVertices
+        .map((v) => [parseFloat(v.x), parseFloat(v.y), parseFloat(v.z)])
+        .flat();
+      pointsGeometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(points, 3)
+      );
 
-    // 렌더링 함수
-    const animate = function () {
-      requestAnimationFrame(animate);
+      const pointsMaterial = new THREE.PointsMaterial({
+        color: 0xff0000,
+        size: 0.1,
+      });
+      const pointsMesh = new THREE.Points(pointsGeometry, pointsMaterial);
+      pointsRef.current.add(pointsMesh);
 
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      // 선 데이터 생성
+      const linesGeometry = new THREE.BufferGeometry();
+      const lines = [];
+      filteredElements.forEach((e) => {
+        const vertexA = verticesData.find((v) => v.pid === e.a);
+        const vertexB = verticesData.find((v) => v.pid === e.b);
+        const vertexC = verticesData.find((v) => v.pid === e.c);
+        if (vertexA && vertexB) {
+          lines.push(
+            [
+              vertexA.x,
+              vertexA.y,
+              vertexA.z,
+              vertexB.x,
+              vertexB.y,
+              vertexB.z,
+            ].flat()
+          );
+        }
+        if (vertexB && vertexC) {
+          lines.push(
+            [
+              vertexB.x,
+              vertexB.y,
+              vertexB.z,
+              vertexC.x,
+              vertexC.y,
+              vertexC.z,
+            ].flat()
+          );
+        }
+        if (vertexC && vertexA) {
+          lines.push(
+            [
+              vertexC.x,
+              vertexC.y,
+              vertexC.z,
+              vertexA.x,
+              vertexA.y,
+              vertexA.z,
+            ].flat()
+          );
+        }
+      });
+      const flatLines = lines.flat();
+      linesGeometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(flatLines, 3)
+      );
 
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    return () => {
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-
-      geometry.dispose();
-      material.dispose();
-      renderer.dispose();
-    };
+      const linesMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
+      const linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
+      linesRef.current.add(linesMesh);
+    }
   }, []);
 
-  return <div ref={mountRef} />;
-}
+  return (
+    <>
+      <group ref={pointsRef} />
+      <group ref={linesRef} />
+    </>
+  );
+};
 
-export default ThreeDCanvas;
+const AppCanvas = () => {
+  return (
+    <div style={{ width: "100vw", height: "50vh" }}>
+      <Canvas camera={{ position: [2, 2, 5], fov: 75 }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <OrbitControls enableZoom={true} enableRotata={true} enablePan={true} />
+        <Scene />
+        <axesHelper args={[0.5]} />
+      </Canvas>
+    </div>
+  );
+};
+
+export default AppCanvas;

@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { CurrentProjectLoad } from "./LocalStorageManage";
 
 export function VertexInput() {
   // The function
   function vertexValidCheck(vertex) {
-    return (
-      !vertex.x ||
-      !vertex.y ||
-      !vertex.z ||
-      isNaN(Number(vertex.x)) ||
-      isNaN(Number(vertex.y)) ||
-      isNaN(Number(vertex.z)) ||
-      vertex.x.length === 0 ||
-      vertex.y.length === 0 ||
-      vertex.z.length === 0
+    return ["x", "y", "z"].some(
+      (axis) => !vertex[axis] || isNaN(Number(vertex[axis]))
     );
   }
 
+  const CurrentProject = CurrentProjectLoad();
+  const projectId = CurrentProject["id"];
   const [vertex, setVertex] = useState({ x: [], y: [], z: [] });
   const [vertices, setVertices] = useState([]);
   const [error, setError] = useState("");
@@ -23,11 +18,12 @@ export function VertexInput() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (!value.trim() || isNaN(Number(value))) {
-      setError(`Error: ${name} must be a number`);
-      setVertex({ ...vertex, [name]: value });
+      setError(`Error: ${name} must be a valid number`);
     } else {
       setError("");
-      setVertex({ ...vertex, [e.target.name]: e.target.value });
+    }
+    if (vertex[name] !== value) {
+      setVertex((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -43,7 +39,11 @@ export function VertexInput() {
     }
 
     // Add pid to vertex information and update to localStorage
-    const newVertex = { ...vertex, pid: vertices.length };
+    const newVertex = {
+      ...vertex,
+      pid: vertices.length,
+      project_id: projectId,
+    };
     const updatedVertices = [...vertices, newVertex];
     setVertices(updatedVertices);
     localStorage.setItem("vertices", JSON.stringify(updatedVertices));
@@ -53,9 +53,12 @@ export function VertexInput() {
   useEffect(() => {
     const loadedVertices = JSON.parse(localStorage.getItem("vertices"));
     if (loadedVertices) {
-      setVertices(loadedVertices);
+      const filteredVertices = loadedVertices.filter(
+        (v) => v.project_id === projectId
+      );
+      setVertices(filteredVertices);
     }
-  }, []);
+  }, [projectId]);
 
   return (
     <div>

@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { CurrentProjectLoad } from "./LocalStorageManage";
 
 export function ElementsInput() {
   // Dynamic Button for vertices
-  function DynamicButtons({ onSelectVertex, disabledVertices }) {
+  function DynamicButtons({ onSelectVertex, disabledVertices, projectId }) {
     const [buttons, setButtons] = useState([]);
 
     // Import vertices id from localStorage and make dynamic button information
     useEffect(() => {
-      const projectObj = localStorage.getItem("vertices");
+      const projectObj = JSON.parse(localStorage.getItem("vertices"));
       if (projectObj) {
-        const pidStringArray = Object.keys(JSON.parse(projectObj));
-        const pidKeys = pidStringArray.map(Number);
+        const filteredVertices = projectObj.filter(
+          (vertex) => vertex.project_id === projectId
+        );
+        const pidKeys = filteredVertices.map((vertex) => vertex.pid);
         setButtons(pidKeys);
       }
-    }, []);
+    }, [projectId]);
 
     return (
       <div>
@@ -38,6 +41,9 @@ export function ElementsInput() {
     );
   }
 
+  const CurrentProject = CurrentProjectLoad();
+  const projectId = CurrentProject["id"];
+
   const [element, setElement] = useState({ a: "", b: "", c: "" });
   const [elements, setElements] = useState([]);
   const [error, setError] = useState("");
@@ -49,11 +55,14 @@ export function ElementsInput() {
   const [disabledVertices, setDisabledVertices] = useState([]);
 
   useEffect(() => {
-    const loadedElements = JSON.parse(localStorage.getItem("Elements"));
+    const loadedElements = JSON.parse(localStorage.getItem("elements"));
     if (loadedElements) {
-      setElements(loadedElements);
+      const filteredElements = loadedElements.filter(
+        (element) => element.project_id === projectId
+      );
+      setElements(filteredElements);
     }
-  }, []);
+  }, [projectId]);
 
   const handleSelectVertex = (vertex) => {
     // debug log
@@ -100,10 +109,11 @@ export function ElementsInput() {
       a: parseInt(element.a, 10),
       b: parseInt(element.b, 10),
       c: parseInt(element.c, 10),
+      project_id: projectId,
     };
     const updatedElement = [...elements, newElement];
     setElements(updatedElement);
-    localStorage.setItem("Elements", JSON.stringify(updatedElement));
+    localStorage.setItem("elements", JSON.stringify(updatedElement));
     // Initialize input and vertex buttons
     setElement({ a: "", b: "", c: "" });
     setEditableInput({ a: true, b: true, c: true });
@@ -117,6 +127,7 @@ export function ElementsInput() {
       <DynamicButtons
         onSelectVertex={handleSelectVertex}
         disabledVertices={disabledVertices}
+        projectId={projectId}
       />
       <h3>Elements</h3>
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -154,7 +165,7 @@ export function ElementsInput() {
         <ul>
           {elements.map((e, index) => (
             <li key={index}>
-              {`Elements ${index} - eid: ${e.eid}, <${e.a}, ${e.b}, ${e.c}>`}
+              {`elements ${index} - eid: ${e.eid}, <${e.a}, ${e.b}, ${e.c}>`}
             </li>
           ))}
         </ul>

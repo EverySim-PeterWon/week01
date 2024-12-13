@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CurrentProjectUpdate } from "../LocalStorageManage";
 
 function DynamicButtons({ onButtonClick }) {
-  const [buttons, setButtons] = React.useState([]);
-  const [selectedButton, setselectedButton] = React.useState(null);
+  const [buttons, setButtons] = useState([]);
+  const [selectedButton, setselectedButton] = useState(null);
 
   // Import project name from localStorage and make dynamic button information
-  React.useEffect(() => {
-    const projectObj = localStorage.getItem("project");
+  useEffect(() => {
+    const projectObj = JSON.parse(localStorage.getItem("project"));
 
     if (projectObj) {
-      const projNameArray = Object.values(JSON.parse(projectObj)).map(
-        (item) => item[0]
-      );
+      const projNameArray = Object.entries(projectObj).map(([key, value]) => ({
+        id: key,
+        name: value[0],
+      }));
       setButtons(projNameArray);
     }
   }, []);
 
   const handleButtonClick = (buttonLabel) => {
-    // console.log(`Button clicked: ${buttonLabel}`);
+    console.log(`Button clicked: ${buttonLabel}`);
     setselectedButton(buttonLabel);
     if (onButtonClick) {
       onButtonClick(buttonLabel);
@@ -35,12 +37,14 @@ function DynamicButtons({ onButtonClick }) {
               onClick={() => handleButtonClick(buttonLabel)}
               style={{
                 // Yellow background when selected
-                backgroundColor: selectedButton === buttonLabel ? "yellow" : "",
-                color: selectedButton === buttonLabel ? "black" : "",
-                border: selectedButton === buttonLabel ? "2px solid black" : "",
+                backgroundColor:
+                  selectedButton === buttonLabel.name ? "yellow" : "",
+                color: selectedButton === buttonLabel.name ? "black" : "",
+                border:
+                  selectedButton === buttonLabel.name ? "2px solid black" : "",
               }}
             >
-              {buttonLabel}
+              {buttonLabel.name}
             </button>
           ))
         ) : (
@@ -53,18 +57,23 @@ function DynamicButtons({ onButtonClick }) {
 
 const LoadProject = () => {
   const navigate = useNavigate();
-  const [disableButton, setDisableButton] = React.useState(true);
+  const [disableButton, setDisableButton] = useState(true);
+  const [selectedProject, setSelectedProject] = React.useState(null);
 
   const handleBackClick = () => {
     navigate("/home");
   };
 
   const handleMakeClick = () => {
-    navigate("/workbench");
+    if (selectedProject) {
+      CurrentProjectUpdate(selectedProject.id);
+      navigate("/workbench");
+    }
   };
 
-  const handleDynamicButtonClick = () => {
+  const handleDynamicButtonClick = (project) => {
     setDisableButton(false);
+    setSelectedProject(project);
   };
 
   return (
