@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
-import ThreeDCanvas from "../ThreeDCanvas";
+import AppCanvas from "../ThreeDCanvas";
 import { VertexInput } from "../VertexWindow";
 import { ElementsInput } from "../ElementsWindow";
 
 const WorkBench = () => {
   //   const navigate = useNavigate();
 
-  const [isVertexOpen, setIsVertexOpen] = React.useState(false);
-  const [isElementOpen, setIsElementOpen] = React.useState(false);
+  const [isVertexOpen, setIsVertexOpen] = useState(false);
+  const [isElementOpen, setIsElementOpen] = useState(false);
+  const [execute, setExecute] = useState(false);
 
   const openVerticesModal = () => {
     setIsVertexOpen(true);
@@ -28,6 +29,13 @@ const WorkBench = () => {
   const closeElementsModal = () => {
     setIsVertexOpen(false);
     setIsElementOpen(false);
+  };
+
+  const executeButton = () => {
+    setIsVertexOpen(false);
+    setIsElementOpen(false);
+    setExecute(true);
+    alert("Execute analysis");
   };
 
   return (
@@ -55,7 +63,10 @@ const WorkBench = () => {
           <button onClick={closeElementsModal}>CLOSE Elements</button>
         </div>
       )}
-      <ThreeDCanvas />
+      <button onClick={executeButton} disabled={execute}>
+        EXECUTE
+      </button>
+      <AppCanvas />
     </div>
   );
 };
