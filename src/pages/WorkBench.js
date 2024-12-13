@@ -2,32 +2,57 @@ import React from "react";
 // import { useNavigate } from "react-router-dom";
 import ThreeDCanvas from "../ThreeDCanvas";
 import { VertexInput } from "../VertexWindow";
+import { ElementsInput } from "../ElementsWindow";
 
 const WorkBench = () => {
   //   const navigate = useNavigate();
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isVertexOpen, setIsVertexOpen] = React.useState(false);
+  const [isElementOpen, setIsElementOpen] = React.useState(false);
 
   const openVerticesModal = () => {
-    setIsOpen(true);
+    setIsVertexOpen(true);
+    setIsElementOpen(false);
   };
 
   const closeVerticesModal = () => {
-    setIsOpen(false);
+    setIsVertexOpen(false);
+    setIsElementOpen(false);
+  };
+
+  const openElementsModal = () => {
+    setIsVertexOpen(false);
+    setIsElementOpen(true);
+  };
+
+  const closeElementsModal = () => {
+    setIsVertexOpen(false);
+    setIsElementOpen(false);
   };
 
   return (
     <div>
-      {!isOpen && (
+      {!isVertexOpen && (
         <div>
           <button onClick={openVerticesModal}>NEW Vertices</button>
         </div>
       )}
 
-      {isOpen && (
+      {isVertexOpen && (
         <div className="modal">
           <VertexInput />
           <button onClick={closeVerticesModal}>CLOSE Vertices</button>
+        </div>
+      )}
+      {!isElementOpen && (
+        <div>
+          <button onClick={openElementsModal}>NEW Elements</button>
+        </div>
+      )}
+      {isElementOpen && (
+        <div className="modal">
+          <ElementsInput />
+          <button onClick={closeElementsModal}>CLOSE Elements</button>
         </div>
       )}
       <ThreeDCanvas />
