@@ -111,9 +111,14 @@ export function ElementsInput() {
       c: parseInt(element.c, 10),
       project_id: projectId,
     };
-    const updatedElement = [...elements, newElement];
-    setElements(updatedElement);
-    localStorage.setItem("elements", JSON.stringify(updatedElement));
+    let localStorageElements =
+      JSON.parse(localStorage.getItem("elements")) || [];
+    localStorageElements.push(newElement);
+
+    const updatedElements = [...elements, newElement];
+    setElements(updatedElements);
+
+    localStorage.setItem("elements", JSON.stringify(localStorageElements));
     // Initialize input and vertex buttons
     setElement({ a: "", b: "", c: "" });
     setEditableInput({ a: true, b: true, c: true });

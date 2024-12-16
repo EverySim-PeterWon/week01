@@ -25,9 +25,6 @@ export function SetNewProjectData(project_id, project_name) {
   }
 
   if (valid_project_data(storedData)) {
-    // const objData = {${project_id}: [${project_name}, ${Date.now()}]};
-    // storedData = localStorage.setItem(JSON.stringify(objData));
-    // storedData[Object.keys(storedData)[0]] = array_new;
     const objData = {};
     const key_new = [project_id];
     objData[key_new] = array_new;

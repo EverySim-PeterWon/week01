@@ -19,6 +19,10 @@ export function MenuBarMain() {
     navigate("/workbench");
   };
 
+  const handleResultClick = () => {
+    navigate("/simulation_result");
+  };
+
   const projectObj = localStorage.getItem("project");
   let project_count = 0;
   let time_recent = "NONE";
@@ -40,6 +44,7 @@ export function MenuBarMain() {
         <button onClick={handleNewClick}>NEW</button>
         <button onClick={handleLoadClick}>LOAD</button>
         <button onClick={handleProjectClick}>PROJECT</button>
+        <button onClick={handleResultClick}>RESULT</button>
         <div>
           <p> Number of Project: {project_count}</p>
           <p> Recent work time: {time_recent}</p>
