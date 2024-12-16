@@ -96,7 +96,7 @@ const Scene = () => {
       const linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
       linesRef.current.add(linesMesh);
     }
-  }, []);
+  }, [projectId]);
 
   return (
     <>

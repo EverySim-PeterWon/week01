@@ -44,9 +44,14 @@ export function VertexInput() {
       pid: vertices.length,
       project_id: projectId,
     };
+    let localStorageVertices =
+      JSON.parse(localStorage.getItem("vertices")) || [];
+    localStorageVertices.push(newVertex);
+
     const updatedVertices = [...vertices, newVertex];
     setVertices(updatedVertices);
-    localStorage.setItem("vertices", JSON.stringify(updatedVertices));
+
+    localStorage.setItem("vertices", JSON.stringify(localStorageVertices));
     setVertex({ x: [], y: [], z: [] });
   };
 
