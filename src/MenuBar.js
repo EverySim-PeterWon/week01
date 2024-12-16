@@ -1,25 +1,45 @@
 import { useNavigate } from "react-router-dom";
 
-export function MenuBarMain() {
+export function MenuBarMain({
+  isOpenProject,
+  setIsOpenProject,
+  isOpenResult,
+  setIsOpenResult,
+}) {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
+    setIsOpenProject(true);
+    setIsOpenResult(true);
     navigate("/home");
   };
 
   const handleNewClick = () => {
+    setIsOpenProject(true);
+    setIsOpenResult(true);
     navigate("/new_project");
   };
 
   const handleLoadClick = () => {
+    setIsOpenProject(true);
+    setIsOpenResult(true);
     navigate("/load_project");
   };
 
   const handleProjectClick = () => {
+    setIsOpenProject(false);
+    setIsOpenResult(true);
     navigate("/workbench");
   };
 
+  const handleExecuteClick = () => {
+    setIsOpenResult(false);
+    alert("Execute analysis");
+    navigate("/simulation_result");
+  };
+
   const handleResultClick = () => {
+    setIsOpenResult(false);
     navigate("/simulation_result");
   };
 
@@ -43,8 +63,15 @@ export function MenuBarMain() {
         <button onClick={handleHomeClick}>HOME</button>
         <button onClick={handleNewClick}>NEW</button>
         <button onClick={handleLoadClick}>LOAD</button>
-        <button onClick={handleProjectClick}>PROJECT</button>
-        <button onClick={handleResultClick}>RESULT</button>
+        <button onClick={handleProjectClick} disabled={isOpenProject}>
+          PROJECT
+        </button>
+        <button onClick={handleExecuteClick} disabled={isOpenProject}>
+          EXECUTE
+        </button>
+        <button onClick={handleResultClick} disabled={isOpenResult}>
+          RESULT
+        </button>
         <div>
           <p> Number of Project: {project_count}</p>
           <p> Recent work time: {time_recent}</p>

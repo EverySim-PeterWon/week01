@@ -20,8 +20,8 @@ function DynamicButtons({ onButtonClick }) {
   }, []);
 
   const handleButtonClick = (buttonLabel) => {
-    console.log(`Button clicked: ${buttonLabel}`);
-    setselectedButton(buttonLabel);
+    console.log(`Button clicked: ${buttonLabel.name}`);
+    setselectedButton(buttonLabel.id);
     if (onButtonClick) {
       onButtonClick(buttonLabel);
     }
@@ -38,10 +38,10 @@ function DynamicButtons({ onButtonClick }) {
               style={{
                 // Yellow background when selected
                 backgroundColor:
-                  selectedButton === buttonLabel.name ? "yellow" : "",
-                color: selectedButton === buttonLabel.name ? "black" : "",
+                  selectedButton === buttonLabel.id ? "yellow" : "",
+                color: selectedButton === buttonLabel.id ? "black" : "",
                 border:
-                  selectedButton === buttonLabel.name ? "2px solid black" : "",
+                  selectedButton === buttonLabel.id ? "2px solid black" : "",
               }}
             >
               {buttonLabel.name}
@@ -55,7 +55,7 @@ function DynamicButtons({ onButtonClick }) {
   );
 }
 
-const LoadProject = () => {
+function LoadProject({ setIsOpenProject }) {
   const navigate = useNavigate();
   const [disableButton, setDisableButton] = useState(true);
   const [selectedProject, setSelectedProject] = React.useState(null);
@@ -67,6 +67,7 @@ const LoadProject = () => {
   const handleMakeClick = () => {
     if (selectedProject) {
       CurrentProjectUpdate(selectedProject.id);
+      setIsOpenProject(false);
       navigate("/workbench");
     }
   };
@@ -86,6 +87,6 @@ const LoadProject = () => {
       </button>
     </div>
   );
-};
+}
 
 export default LoadProject;

@@ -31,13 +31,6 @@ const WorkBench = () => {
     setIsElementOpen(false);
   };
 
-  const executeButton = () => {
-    setIsVertexOpen(false);
-    setIsElementOpen(false);
-    setExecute(true);
-    alert("Execute analysis");
-  };
-
   return (
     <div>
       {!isVertexOpen && (
@@ -63,9 +56,6 @@ const WorkBench = () => {
           <button onClick={closeElementsModal}>CLOSE Elements</button>
         </div>
       )}
-      <button onClick={executeButton} disabled={execute}>
-        EXECUTE
-      </button>
       <AppCanvas />
     </div>
   );
